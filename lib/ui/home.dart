@@ -2,88 +2,102 @@ import 'package:flutter/material.dart';
 import 'package:open_weather_app/ui/style.dart';
 import 'package:http/http.dart' as http;
 import "package:open_weather_app/util/utils.dart" as utils;
+import 'package:open_weather_app/ui/city_screen.dart';
 import 'dart:convert';
 import 'dart:async';
 
 class Klimatic extends StatefulWidget {
   @override
-  _KlimaticState createState() => _KlimaticState();
+  _KlimaticState createState() => new _KlimaticState();
 }
 
 class _KlimaticState extends State<Klimatic> {
+  String _cityName = utils.defaultCity;
+
+  Future _goToNextScreen(BuildContext context) async {
+    Map result = await Navigator.of(context)
+        .push(new MaterialPageRoute<Map>(builder: (BuildContext context) {
+      return new ChangeCity();
+    }));
+    if (result != null && result.containsKey("enter")) {
+      setState(() {
+        _cityName = result['enter'];
+      });
+    }
+  }
+
   void showStuff() async {
-    Map data = await getWeather(utils.apiKey, "London");
-    updateTempWidget("London");
+    Map data = await getWeather(utils.apiKey, utils.defaultCity);
+    updateTempWidget(utils.defaultCity);
     print(data.toString());
   }
 
   Future<Map> getWeather(String appId, String city) async {
-    String api = "https://samples.openweathermap.org/data/2.5/weather?q=$city"
-        "&appid=$appId";
+    String api = "http://api.openweathermap.org/data/2.5/weather?q=$city"
+        "&APPID=3a82e44a8e49b1f86cfc704c7ce03129&units=metric";
     http.Response response = await http.get(api);
     return json.decode(response.body);
   }
 
   @override
   Widget build(BuildContext context) {
-
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Klimatic"),
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Klimatic"),
         centerTitle: true,
         backgroundColor: Colors.redAccent,
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.menu), onPressed: showStuff)
+          new IconButton(
+              icon: Icon(Icons.menu), onPressed: () => _goToNextScreen(context))
         ],
       ),
-      body: Stack(
+      body: new Stack(
         children: <Widget>[
-          Center(
+          new Center(
             child: Image.asset('images/umbrella.png',
                 width: 490.0, fit: BoxFit.fill),
           ),
-          Container(
+          new Container(
               alignment: Alignment.topRight,
               margin: const EdgeInsets.fromLTRB(0.0, 10.9, 20.9, 0),
-              child: Text(
-                "Spokane",
+              child: new Text(
+                _cityName,
                 style: cityStyle(),
               )),
-          Container(
+          new Container(
             alignment: Alignment.center,
             child: Image.asset("images/light_rain.png"),
           ),
-          Container(
-              margin: const EdgeInsets.fromLTRB(30.0, 290.0, 0.0, 0.0),
-              child: updateTempWidget("London"))
+          new Container(
+              margin: const EdgeInsets.fromLTRB(28.0, 290.0, 0.0, 0.0),
+              child: updateTempWidget(_cityName))
         ],
       ),
     );
   }
 
   Widget updateTempWidget(String city) {
-    return FutureBuilder(
-        future: getWeather(utils.apiKey, "San+Fransisco"),
-        builder: (BuildContext context, AsyncSnapshot<Map> snapShot){
-          if(snapShot.hasData) {
+    return new FutureBuilder(
+        future:
+            getWeather(utils.apiKey, city == null ? utils.defaultCity : city),
+        builder: (BuildContext context, AsyncSnapshot<Map> snapShot) {
+          if (snapShot.hasData) {
             Map content = snapShot.data;
-            return Container(
-              child: Column(
+            return new Container(
+              child: new Column(
                 children: <Widget>[
-                  ListTile(
-                    title: Text(content['main']['temp'].toString(),
-                    style: tempStyle(),),
-
+                  new ListTile(
+                    title: new Text(
+                      content['main']['temp'].toString(),
+                      style: tempStyle(),
+                    ),
                   )
                 ],
               ),
-
             );
           } else {
-            return Container();
+            return new Container();
           }
-        }
-    );
+        });
   }
 }

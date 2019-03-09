@@ -1,3 +1,4 @@
 
-final String apiKey =	"b1b15e88fa797225412429c1c50c122a1";
+final String apiKey =	"3a82e44a8e49b1f86cfc704c7ce03129";
+final String defaultCity = "London";
 
