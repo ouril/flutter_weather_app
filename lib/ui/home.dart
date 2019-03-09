@@ -34,9 +34,15 @@ class _KlimaticState extends State<Klimatic> {
 
   Future<Map> getWeather(String appId, String city) async {
     String api = "http://api.openweathermap.org/data/2.5/weather?q=$city"
-        "&APPID=3a82e44a8e49b1f86cfc704c7ce03129&units=metric";
+        "&APPID=$appId&units=metric";
     http.Response response = await http.get(api);
-    return json.decode(response.body);
+
+    if (response.statusCode < 400)
+      return json.decode(response.body);
+    else
+      return {
+        "main": {"temp": "~~~"}
+      };
   }
 
   @override
@@ -91,7 +97,14 @@ class _KlimaticState extends State<Klimatic> {
                       content['main']['temp'].toString(),
                       style: tempStyle(),
                     ),
-                  )
+                    subtitle: new ListTile(
+                      title: new Text(
+                        "Humidity: ${content['main']['humidity'].toString()}\n"
+                            "Min: ${content['main']['temp_min'].toString()} C\n"
+                            "Max: ${content['main']['temp_max'].toString()} C",
+                        style: tempSubStyle(),
+                      )
+                    ),                  )
                 ],
               ),
             );

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
-TextStyle cityStyle() =>
-    new TextStyle(color: Colors.white, fontSize: 22.9, fontStyle: FontStyle.italic);
+TextStyle cityStyle() => new TextStyle(
+    color: Colors.white, fontSize: 22.9, fontStyle: FontStyle.italic);
+
+TextStyle tempStyle() => new TextStyle(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w500,
+    fontSize: 49.9);
 
 
-TextStyle tempStyle() =>
-    new TextStyle(
-      color: Colors.white,
-      fontStyle: FontStyle.normal,
-      fontWeight: FontWeight.w500,
-      fontSize: 49.9
-    );
+TextStyle tempSubStyle() => new TextStyle(
+    color: Colors.white,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w400,
+    fontSize: 19.9);
